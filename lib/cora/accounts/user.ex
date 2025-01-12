@@ -51,6 +51,7 @@ defmodule Cora.Accounts.User do
     changeset
     |> validate_required([:username])
     |> validate_format(:username, ~r/^\S*$/, message: "must not contain spaces")
+    |> validate_length(:username, min: 4, max: 20)
     |> unique_constraint(:username)
   end
 
