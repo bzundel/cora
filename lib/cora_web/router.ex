@@ -23,6 +23,12 @@ defmodule CoraWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/admin", CoraWeb.Admin do
+    pipe_through [:browser, :require_authenticated_user, :require_admin_user]
+
+    get "/", AdminController, :index
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", CoraWeb do
   #   pipe_through :api

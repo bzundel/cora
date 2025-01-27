@@ -213,6 +213,18 @@ defmodule CoraWeb.UserAuth do
     end
   end
 
+  def require_admin_user(conn, _opts) do
+    case conn.assigns[:current_user] do
+      %{is_admin: true} ->
+        conn
+      _ ->
+        conn
+        |> put_flash(:error, "You must be an administrator to access this page.")
+        |> redirect(to: ~p"/")
+        |> halt()
+    end
+  end
+
   defp put_token_in_session(conn, token) do
     conn
     |> put_session(:user_token, token)
