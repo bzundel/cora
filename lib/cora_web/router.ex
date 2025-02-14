@@ -27,6 +27,11 @@ defmodule CoraWeb.Router do
     pipe_through [:browser, :require_authenticated_user, :require_admin_user]
 
     get "/", AdminController, :index
+
+    live_session :invitation_keys,
+      on_mount: [{CoraWeb.UserAuth, :mount_current_user}] do
+      live "/invitation_keys", InvitationKeysLive
+    end
   end
 
   # Other scopes may use custom stacks.
