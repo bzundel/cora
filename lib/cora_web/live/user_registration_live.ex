@@ -2,7 +2,7 @@ defmodule CoraWeb.UserRegistrationLive do
   use CoraWeb, :live_view
 
   alias Cora.Accounts
-  alias Cora.Accounts.User
+  alias Cora.Accounts.{User, InvitationKey}
 
   def render(assigns) do
     ~H"""
@@ -36,6 +36,7 @@ defmodule CoraWeb.UserRegistrationLive do
         <.input field={@form[:last_name]} type="text" label="Last name" required />
         <.input field={@form[:email]} type="text" label="Email" required />
         <.input field={@form[:password]} type="password" label="Password" required />
+        <.input name="invitation_key" errors={@invitation_key_error} value={@invitation_key_value} type="text" label="Invitation key" required />
 
         <:actions>
           <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
@@ -50,26 +51,32 @@ defmodule CoraWeb.UserRegistrationLive do
 
     socket =
       socket
-      |> assign(trigger_submit: false, check_errors: false)
+      |> assign(trigger_submit: false, check_errors: false, invitation_key_value: nil, invitation_key_error: [])
       |> assign_form(changeset)
 
     {:ok, socket, temporary_assigns: [form: nil]}
   end
 
-  def handle_event("save", %{"user" => user_params}, socket) do
-    case Accounts.register_user(user_params) do
-      {:ok, user} ->
-        {:ok, _} =
-          Accounts.deliver_user_confirmation_instructions(
-            user,
-            &url(~p"/users/confirm/#{&1}")
-          )
+  def handle_event("save", %{"user" => user_params, "invitation_key" => key_uuid}, socket) do
+    case InvitationKey.check_key(key_uuid) do
+      {:error, error} ->
+        IO.puts(error)
+        {:noreply, socket |> assign(check_errors: true, invitation_key_error: [error])}
+      {:ok, key} ->
+        case Accounts.register_user(user_params) do
+          {:ok, user} ->
+            {:ok, _} =
+              Accounts.deliver_user_confirmation_instructions(
+                user,
+                &url(~p"/users/confirm/#{&1}")
+              )
 
-        changeset = Accounts.change_user_registration(user)
-        {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
+            changeset = Accounts.change_user_registration(user)
+            {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, socket |> assign(check_errors: true) |> assign_form(changeset)}
+          {:error, %Ecto.Changeset{} = changeset} ->
+            {:noreply, socket |> assign(check_errors: true) |> assign_form(changeset)}
+        end
     end
   end
 
