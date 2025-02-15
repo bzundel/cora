@@ -44,10 +44,10 @@ defmodule CoraWeb.UserSettingsLive do
           phx-trigger-action={@trigger_submit}
         >
           <input
-            name={@password_form[:email].name}
+            name={@password_form[:username].name}
             type="hidden"
-            id="hidden_user_email"
-            value={@current_email}
+            id="hidden_user_username"
+            value={@current_username}
           />
           <.input field={@password_form[:password]} type="password" label="New password" required />
           <.input
@@ -96,6 +96,7 @@ defmodule CoraWeb.UserSettingsLive do
       |> assign(:current_password, nil)
       |> assign(:email_form_current_password, nil)
       |> assign(:current_email, user.email)
+      |> assign(:current_username, user.username)
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:trigger_submit, false)
