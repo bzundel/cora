@@ -9,6 +9,8 @@ defmodule CoraWeb.UserSessionController do
   end
 
   def create(conn, %{"_action" => "password_updated"} = params) do
+    IO.inspect(params)
+
     conn
     |> put_session(:user_return_to, ~p"/users/settings")
     |> create(params, "Password updated successfully!")
@@ -26,7 +28,6 @@ defmodule CoraWeb.UserSessionController do
       |> put_flash(:info, info)
       |> UserAuth.log_in_user(user, user_params)
     else
-      # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
       conn
       |> put_flash(:error, "Invalid username or password")
       |> put_flash(:username, String.slice(username, 0, 160))

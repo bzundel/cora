@@ -7,7 +7,7 @@ defmodule CoraWeb.CustomComponents do
 
   def banner(assigns) do
     ~H"""
-    <div class="bg-slate-100 m-2 p-4 rounded-xl text-xl font-extrabold">
+    <div class="bg-slate-100 m-2 p-4 rounded-xl text-xl font-extrabold bg-white">
       <h1>{@text}</h1>
     </div>
     """
@@ -19,7 +19,7 @@ defmodule CoraWeb.CustomComponents do
   def banner_link(assigns) do
     ~H"""
     <a href={@nav}>
-      <div class="border m-2 p-4 align-middle justify-center rounded-xl">
+      <div class="border m-2 p-4 align-middle justify-center rounded-xl bg-white">
         <span class="font-bold">{@text}</span>
       </div>
     </a>
