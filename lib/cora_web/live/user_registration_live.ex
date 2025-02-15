@@ -65,6 +65,8 @@ defmodule CoraWeb.UserRegistrationLive do
       {:ok, key} ->
         case Accounts.register_user(user_params) do
           {:ok, user} ->
+            InvitationKey.mark_key_used(key, user.id)
+
             {:ok, _} =
               Accounts.deliver_user_confirmation_instructions(
                 user,

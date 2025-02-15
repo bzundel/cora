@@ -46,4 +46,10 @@ defmodule Cora.Accounts.InvitationKey do
         end
     end
   end
+
+  def mark_key_used(key, user_id) do
+    key
+    |> Ecto.Changeset.change(used_by_id: user_id)
+    |> Repo.update()
+  end
 end
