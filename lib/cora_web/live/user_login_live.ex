@@ -31,6 +31,6 @@ defmodule CoraWeb.UserLoginLive do
   def mount(_params, _session, socket) do
     username = Phoenix.Flash.get(socket.assigns.flash, :username)
     form = to_form(%{"username" => username}, as: "user")
-    {:ok, assign(socket, form: form), temporary_assigns: [form: form]}
+    {:ok, assign(socket, page_title: "Login", form: form), temporary_assigns: [form: form]}
   end
 end

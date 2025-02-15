@@ -47,7 +47,11 @@ defmodule CoraWeb.UserRegistrationLive do
 
     socket =
       socket
-      |> assign(trigger_submit: false, check_errors: false, invitation_key_value: nil, invitation_key_error: [])
+      |> assign(page_title: "Register")
+      |> assign(trigger_submit: false)
+      |> assign(check_errors: false)
+      |> assign(invitation_key_value: nil)
+      |> assign(invitation_key_error: [])
       |> assign_form(changeset)
 
     {:ok, socket, temporary_assigns: [form: nil]}
