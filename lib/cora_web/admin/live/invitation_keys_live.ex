@@ -25,7 +25,9 @@ defmodule CoraWeb.Admin.InvitationKeysLive do
               <span class="text-gray-500">{key.inserted_at}</span>
             </div>
           </div>
-          <.button phx-click="delete" phx-value-id={key.id}>Delete</.button>
+          <%= if key.used_by == nil do %>
+            <.button phx-click="delete" phx-value-id={key.id}>Delete</.button>
+          <% end %>
         </div>
       <% end %>
     </div>
