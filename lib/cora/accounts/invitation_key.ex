@@ -52,4 +52,9 @@ defmodule Cora.Accounts.InvitationKey do
     |> Ecto.Changeset.change(used_by_id: user_id)
     |> Repo.update()
   end
+
+  def delete_key_by_id(id) do
+    key = Repo.get(InvitationKey, id)
+    Repo.delete(key)
+  end
 end
