@@ -23,6 +23,16 @@ defmodule CoraWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/recipes", CoraWeb.Recipes do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :recipes,
+      on_mount: [{CoraWeb.UserAuth, :mount_current_user}] do
+      live "/", Index
+      live "/new", RecipeForm, :new
+    end
+  end
+
   scope "/admin", CoraWeb.Admin do
     pipe_through [:browser, :require_authenticated_user, :require_admin_user]
 

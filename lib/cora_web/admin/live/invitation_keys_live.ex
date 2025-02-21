@@ -4,6 +4,7 @@ defmodule CoraWeb.Admin.InvitationKeysLive do
 
   alias Cora.Repo
 
+  @impl true
   def render(assigns) do
     ~H"""
     <.button phx-click="new" class="mb-2">New</.button>
