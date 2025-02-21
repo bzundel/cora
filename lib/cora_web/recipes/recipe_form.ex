@@ -13,11 +13,19 @@ defmodule CoraWeb.Recipes.RecipeForm do
       phx-submit="save"
     >
       <.input field={@form[:name]} type="text" label="Name" />
-      <.input field={@form[:description]} type="text" label="Description" />
-      <.input field={@form[:prep_time]} type="number" label="Preparation time" />
-      <.input field={@form[:cooking_time]} type="number" label="Cooking time" />
-      <.input field={@form[:servings]} type="number" label="Servings" />
-      <.input field={@form[:instructions]} type="text" label="Instructions" />
+      <.input field={@form[:description]} type="textarea" rows={4} label="Description" />
+      <div class="flex gap-x-2">
+        <div class="w-1/3">
+          <.input field={@form[:prep_time]} type="number" label="Preparation time" />
+        </div>
+        <div class="w-1/3">
+          <.input field={@form[:cooking_time]} type="number" label="Cooking time" />
+        </div>
+        <div class="w-1/3">
+          <.input field={@form[:servings]} type="number" label="Servings" />
+        </div>
+      </div>
+      <.input field={@form[:instructions]} type="textarea" rows={10} label="Instructions" />
       <:actions>
         <.button phx-disable-with="Saving...">Save</.button>
       </:actions>
