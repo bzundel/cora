@@ -3,24 +3,36 @@ defmodule CoraWeb.CustomComponents do
 
   import CoraWeb.CoreComponents
 
-  attr :text, :string, required: true
-
+  slot :inner_block, required: true
   def banner(assigns) do
     ~H"""
     <div class="bg-slate-100 m-2 p-4 rounded-xl text-xl font-extrabold bg-white">
-      <h1>{@text}</h1>
+      <h1>{render_slot(@inner_block)}</h1>
     </div>
     """
   end
 
-  attr :text, :string, required: true
-  attr :nav, :string, default: "/"
+  attr :href, :string, default: "/"
 
+  slot :inner_block, required: true
   def banner_link(assigns) do
     ~H"""
-    <a href={@nav}>
-      <div class="border m-2 p-4 align-middle justify-center rounded-xl bg-white">
-        <span class="font-bold">{@text}</span>
+    <a href={@href}>
+      <div class="border my-2 p-4 align-middle justify-center rounded-xl bg-gray-100">
+        <span class="font-bold">{render_slot(@inner_block)}</span>
+      </div>
+    </a>
+    """
+  end
+
+  attr :href, :string, default: "/"
+  slot :inner_block, required: true
+  def a(assigns) do
+    ~H"""
+    <a href={@href}>
+      <div class="inline-flex gap-x-2 rounded-xl bg-gray-100 p-2 w-fit hover:bg-gray-200 transition duration-300">
+        <.icon name="hero-arrow-right"/>
+        <span class="font-bold">{render_slot(@inner_block)}</span>
       </div>
     </a>
     """

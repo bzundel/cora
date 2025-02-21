@@ -7,8 +7,11 @@ defmodule CoraWeb.Recipes.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <.banner text="Recipes"/>
-    <.link href={~p"/recipes/new"}>New</.link>
+    <.banner>Recipes</.banner>
+
+    <div class="grid justify-items-end">
+      <.a href={~p"/recipes/new"}>New</.a>
+    </div>
 
     <ul>
     <%= for recipe <- @recipes do%>
