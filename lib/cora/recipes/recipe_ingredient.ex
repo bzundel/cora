@@ -4,9 +4,9 @@ defmodule Cora.Recipes.RecipeIngredient do
 
   schema "recipe_ingredients" do
     field :ingredient, :string
-    field :amount, :float
-    field :recipe_id, :id
-    field :measurement_id, :id
+    field :amount, :integer
+    belongs_to :recipe, Cora.Recipes.Recipe
+    belongs_to :measurement, Cora.Recipes.Measurement
 
     timestamps(type: :utc_datetime)
   end
@@ -14,7 +14,7 @@ defmodule Cora.Recipes.RecipeIngredient do
   @doc false
   def changeset(recipe_ingredient, attrs) do
     recipe_ingredient
-    |> cast(attrs, [:ingredient, :amount])
-    |> validate_required([:ingredient, :amount])
+    |> cast(attrs, [:ingredient, :amount, :measurement_id])
+    |> validate_required([:ingredient, :amount, :measurement_id])
   end
 end

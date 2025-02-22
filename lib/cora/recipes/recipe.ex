@@ -2,6 +2,7 @@ defmodule Cora.Recipes.Recipe do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Cora.Recipes.RecipeIngredient
   alias Cora.Repo
   alias Cora.Recipes.Recipe
 
@@ -12,6 +13,7 @@ defmodule Cora.Recipes.Recipe do
     field :prep_time, :integer
     field :cooking_time, :integer
     field :servings, :integer
+    has_many :recipe_ingredients, Cora.Recipes.RecipeIngredient
 
     timestamps(type: :utc_datetime)
   end
@@ -21,6 +23,7 @@ defmodule Cora.Recipes.Recipe do
     recipe
     |> cast(attrs, [:name, :description, :prep_time, :cooking_time, :servings, :instructions])
     |> validate_required([:name, :description, :prep_time, :cooking_time, :servings, :instructions])
+    |> cast_assoc(:recipe_ingredients, with: &RecipeIngredient.changeset/2)
   end
 
   def all_recipes do
@@ -29,9 +32,21 @@ defmodule Cora.Recipes.Recipe do
   end
 
   def create_recipe(attrs \\ %{}) do
-    %Recipe{}
+    IO.inspect(attrs, label: "Attributes being saved")
+
+    changeset = %Recipe{}
     |> Recipe.changeset(attrs)
-    |> Repo.insert()
+
+    IO.inspect(changeset, label: "Changeset before save")
+
+    case Repo.insert(changeset) do
+      {:ok, recipe} ->
+        IO.inspect(recipe, label: "Saved recipe")
+        {:ok, recipe}
+      {:error, failed_changeset} ->
+        IO.inspect(failed_changeset, label: "Failed changeset")
+        {:error, failed_changeset}
+    end
   end
 
   def change_recipe(%Recipe{} = recipe, attrs \\ %{}) do

@@ -6,7 +6,7 @@ defmodule CoraWeb.CustomComponents do
   slot :inner_block, required: true
   def banner(assigns) do
     ~H"""
-    <div class="bg-slate-100 m-2 p-4 rounded-xl text-xl font-extrabold bg-white">
+    <div class="bg-slate-100 rounded-xl text-xl font-extrabold bg-white">
       <h1>{render_slot(@inner_block)}</h1>
     </div>
     """

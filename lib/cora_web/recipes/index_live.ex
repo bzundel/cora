@@ -7,10 +7,11 @@ defmodule CoraWeb.Recipes.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <.banner>Recipes</.banner>
-
-    <div class="grid justify-items-end">
-      <.a href={~p"/recipes/new"}>New</.a>
+    <div class="flex items-center justify-between">
+      <.banner>Recipes</.banner>
+      <div class="flex gap-x-2">
+        <.a href={~p"/recipes/new"}>New</.a>
+      </div>
     </div>
 
     <ul>
