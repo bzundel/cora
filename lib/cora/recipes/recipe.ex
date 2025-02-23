@@ -26,7 +26,7 @@ defmodule Cora.Recipes.Recipe do
     |> cast_assoc(:recipe_ingredients, with: &RecipeIngredient.changeset/2)
   end
 
-  def all_recipes do
+  def all_recipes do # FIXME does this belong in here? maybe move all these functions to Cora.Recipes? some function are duplicate as well...
     Recipe
     |> Repo.all()
   end
@@ -51,9 +51,5 @@ defmodule Cora.Recipes.Recipe do
 
   def change_recipe(%Recipe{} = recipe, attrs \\ %{}) do
     Recipe.changeset(recipe, attrs)
-  end
-
-  def get_recipe(id) do
-    Repo.get!(Recipe, id)
   end
 end

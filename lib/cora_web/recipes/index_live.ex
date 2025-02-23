@@ -1,26 +1,29 @@
 defmodule CoraWeb.Recipes.Index do
   use CoraWeb, :live_view
 
-  alias Cora.Repo
-  alias Cora.Recipes.Recipe
+  alias Cora.Recipes
 
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between mb-4">
       <.banner>Recipes</.banner>
-      <!--<div class="flex gap-x-2">
-        <.a href={~p"/recipes/new"}>New</.a>
-      </div>-->
 
       <.button phx-click="navigate_new_recipe">New</.button>
     </div>
 
-    <ul>
-    <%= for recipe <- @recipes do%>
-      <li>{recipe.name}</li>
-    <% end %>
-    </ul>
+    <div class="flex flex-col gap-y-2">
+      <%= for recipe <- @recipes do%>
+        <.link navigate={~p"/recipes/#{recipe.id}"}>
+          <div class="p-2 rounded-xl bg-gray-100 grid grid-cols-2">
+            <span class="col-span-3 font-bold">{recipe.name}</span>
+            <span class="col-span-3 text-sm text-gray-700">{recipe.description}</span>
+            <span class="text-sm">{"Prep. time: #{recipe.prep_time} mins"}</span>
+            <span class="text-sm">{"Cooking time: #{recipe.cooking_time} mins"}</span>
+          </div>
+        </.link>
+      <% end %>
+    </div>
     """
   end
 
@@ -38,7 +41,7 @@ defmodule CoraWeb.Recipes.Index do
 
   @impl true
   def handle_event("navigate_new_recipe", _params, socket) do
-    socket = case Enum.empty?(Cora.Recipes.Measurement.all_measurements()) do
+    socket = case Enum.empty?(Recipes.Measurement.all_measurements()) do
       true ->
         put_flash(socket, :error, "You must add a measurement first!")
       false ->

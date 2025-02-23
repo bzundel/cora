@@ -2,6 +2,7 @@ defmodule CoraWeb.Recipes.RecipeForm do
 alias Enum.EmptyError
   use CoraWeb, :live_view
 
+  alias Cora.Recipes
   alias Cora.Recipes.Recipe
   alias Cora.Recipes.Measurement
 
@@ -98,12 +99,13 @@ alias Enum.EmptyError
     |> Enum.map(&{&1.unit, &1.id})
   end
 
+  @impl true
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
-    recipe = Recipe.get_recipe!(id)
+    recipe = Recipes.get_recipe!(id)
     changeset = Recipe.change_recipe(recipe)
 
     assign(socket,

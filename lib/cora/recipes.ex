@@ -38,6 +38,20 @@ defmodule Cora.Recipes do
   def get_recipe!(id), do: Repo.get!(Recipe, id)
 
   @doc """
+  Gets a single recipe by id.
+
+  Returns `{:ok, recipe}` if an entity with the given `id` was found, else `:error`.
+  """
+  def get_recipe(id) do
+    case Repo.get(Recipe, id) do
+      nil ->
+        :error
+      recipe ->
+        {:ok, recipe}
+    end
+  end
+
+  @doc """
   Creates a recipe.
 
   ## Examples
