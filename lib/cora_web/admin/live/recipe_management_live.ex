@@ -15,9 +15,9 @@ defmodule CoraWeb.Admin.RecipeManagementLive do
       <span class="font-bold text-l">Measurements</span>
       <div class="flex flex-col gap-y-1 my-2">
         <%= for measurement <- @measurements do %>
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center hover:bg-gray-100 rounded-xl transition duration-300 p-1 ps-4">
             <span>{measurement.unit}</span>
-            <.button class="p-2" phx-submit="delete_measurement" phx-value-id={measurement.id}>Delete</.button>
+            <.button class="p-2" phx-click="delete_measurement" phx-value-id={measurement.id}>Delete</.button>
           </div>
         <% end %>
       </div>
@@ -58,6 +58,9 @@ defmodule CoraWeb.Admin.RecipeManagementLive do
   def handle_event("delete_measurement", %{"id" => id}, socket) do
     Recipes.delete_measurement(id)
     measurements = Recipes.all_measurements()
-    {:noreply, assign(socket, :measurements, measurements)}
+
+    {:noreply, socket
+      |> assign(:measurements, measurements)
+      |> put_flash(:info, "Successfully delete measurement!")}
   end
 end
