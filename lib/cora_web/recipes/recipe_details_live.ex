@@ -9,7 +9,8 @@ defmodule CoraWeb.Recipes.DetailsLive do
     <div class="flex items-center justify-between mb-4">
       <.banner>{@recipe.name}</.banner>
       <div>
-      <.a href={~p"/recipes"}>Back</.a>
+        <.a href={~p"/recipes/edit/#{@recipe.id}"}>Edit</.a>
+        <.a href={~p"/recipes"}>Back</.a>
       </div>
     </div>
 

@@ -31,6 +31,7 @@ defmodule CoraWeb.Router do
       live "/", Index
       live "/new", RecipeForm, :new
       live "/:id", DetailsLive
+      live "/edit/:id", RecipeForm, :edit
     end
   end
 

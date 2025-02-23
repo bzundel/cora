@@ -13,7 +13,7 @@ defmodule Cora.Recipes.Recipe do
     field :prep_time, :integer
     field :cooking_time, :integer
     field :servings, :integer
-    has_many :recipe_ingredients, Cora.Recipes.RecipeIngredient
+    has_many :recipe_ingredients, Cora.Recipes.RecipeIngredient, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
