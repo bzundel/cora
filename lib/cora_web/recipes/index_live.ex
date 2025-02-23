@@ -9,7 +9,10 @@ defmodule CoraWeb.Recipes.Index do
     <div class="flex items-center justify-between mb-4">
       <.banner>Recipes</.banner>
 
-      <.button phx-click="navigate_new_recipe">New</.button>
+      <div>
+        <.button phx-click="open_settings">Settings</.button>
+        <.button phx-click="navigate_new_recipe">New</.button>
+      </div>
     </div>
 
     <div class="flex flex-col gap-y-2">
@@ -24,6 +27,15 @@ defmodule CoraWeb.Recipes.Index do
         </.link>
       <% end %>
     </div>
+
+    <.modal :if={@show_settings_dialog} id="settings-modal" show on_cancel={JS.push("close_modal")}>
+      <.live_component
+        module={CoraWeb.Recipes.Dialogs.RecipeSettingsDialog}
+        id="settings_dialog"
+        title="Recipe settings"
+        subtitle="Configure any settings relevant to recipes here."
+      />
+    </.modal>
     """
   end
 
@@ -35,6 +47,7 @@ defmodule CoraWeb.Recipes.Index do
       socket
       |> assign(:page_title, "Recipes")
       |> assign(:recipes, recipes)
+      |> assign(:show_settings_dialog, false)
 
     {:ok, socket}
   end
@@ -47,6 +60,19 @@ defmodule CoraWeb.Recipes.Index do
       false ->
         push_navigate(socket, to: ~p"/recipes/new")
     end
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("open_settings", _params, socket) do
+    {:noreply, assign(socket, :show_settings_dialog, true)}
+  end
+
+  def handle_event("close_modal", _params, socket) do
+    socket =
+      socket
+      |> assign(:show_settings_dialog, false)
 
     {:noreply, socket}
   end
