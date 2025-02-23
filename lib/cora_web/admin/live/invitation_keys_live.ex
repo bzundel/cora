@@ -1,8 +1,5 @@
 defmodule CoraWeb.Admin.InvitationKeysLive do
-  alias Cora.Accounts.InvitationKey
   use CoraWeb, :live_view
-
-  alias Cora.Repo
 
   @impl true
   def render(assigns) do
