@@ -9,9 +9,11 @@ defmodule CoraWeb.Recipes.Index do
     ~H"""
     <div class="flex items-center justify-between">
       <.banner>Recipes</.banner>
-      <div class="flex gap-x-2">
+      <!--<div class="flex gap-x-2">
         <.a href={~p"/recipes/new"}>New</.a>
-      </div>
+      </div>-->
+
+      <.button phx-click="navigate_new_recipe">New</.button>
     </div>
 
     <ul>
@@ -32,5 +34,17 @@ defmodule CoraWeb.Recipes.Index do
       |> assign(:recipes, recipes)
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("navigate_new_recipe", _params, socket) do
+    socket = case Enum.empty?(Cora.Recipes.Measurement.all_measurements()) do
+      true ->
+        put_flash(socket, :error, "You must add a measurement first!")
+      false ->
+        push_navigate(socket, to: ~p"/recipes/new")
+    end
+
+    {:noreply, socket}
   end
 end
