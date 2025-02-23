@@ -7,7 +7,6 @@ defmodule Cora.Recipes do
   alias Cora.Repo
 
   alias Cora.Recipes.Recipe
-  alias Cora.Recipes.Measurement
 
   @doc """
   Returns the list of recipes.
@@ -118,29 +117,5 @@ defmodule Cora.Recipes do
   """
   def change_recipe(%Recipe{} = recipe, attrs \\ %{}) do
     Recipe.changeset(recipe, attrs)
-  end
-
-  @doc """
-  Returns all `Measurement` entities.
-  """
-  def all_measurements do
-    Repo.all(Measurement)
-  end
-
-  @doc """
-  Creates a new `Measurement` entity from a string `unit`.
-  """
-  def create_measurement(unit) do
-    %Measurement{}
-    |> Measurement.changeset(%{unit: unit})
-    |> Repo.insert()
-  end
-
-  @doc """
-  Delete a `Measurement` entity from a provided `id`.
-  """
-  def delete_measurement(id) do
-    Repo.get!(Measurement, id)
-    |> Repo.delete()
   end
 end

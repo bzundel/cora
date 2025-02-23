@@ -42,7 +42,6 @@ defmodule CoraWeb.Router do
     live_session :invitation_keys,
       on_mount: [{CoraWeb.UserAuth, :mount_current_user}] do
       live "/invitation_keys", InvitationKeysLive
-      live "/recipes", RecipeManagementLive
     end
   end
 
