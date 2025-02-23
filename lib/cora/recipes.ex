@@ -35,7 +35,10 @@ defmodule Cora.Recipes do
       ** (Ecto.NoResultsError)
 
   """
-  def get_recipe!(id), do: Repo.get!(Recipe, id)
+  def get_recipe!(id) do
+   Repo.get!(Recipe, id)
+   |> Repo.preload(recipe_ingredients: :measurement)
+  end
 
   @doc """
   Gets a single recipe by id.

@@ -30,6 +30,7 @@ defmodule CoraWeb.Router do
       on_mount: [{CoraWeb.UserAuth, :mount_current_user}] do
       live "/", Index
       live "/new", RecipeForm, :new
+      live "/:id", DetailsLive
     end
   end
 
