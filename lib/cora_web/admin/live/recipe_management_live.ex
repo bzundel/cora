@@ -58,7 +58,6 @@ defmodule CoraWeb.Admin.RecipeManagementLive do
   def handle_event("delete_measurement", %{"id" => id}, socket) do
     Recipes.delete_measurement(id)
     measurements = Recipes.all_measurements()
-
     {:noreply, socket
       |> assign(:measurements, measurements)
       |> put_flash(:info, "Successfully delete measurement!")}
