@@ -42,22 +42,30 @@ alias Enum.EmptyError
       <hr/>
 
       <fieldset>
-        <.inputs_for :let={f_ingredient} field={@form[:recipe_ingredients]}>
-          <div class="flex gap-x-2 items-center">
-            <div class="w-1/2">
-              <.input field={f_ingredient[:ingredient]} type="text"/>
-            </div>
-            <div class="w-1/4">
-              <.input field={f_ingredient[:amount]} type="number"/>
-            </div>
-            <div class="w-1/4">
-              <.input field={f_ingredient[:measurement_id]} type="select" options={measurement_options()}/>
-            </div>
-            <div class="">
-              <.button phx-click="delete_ingredient" phx-value-index={f_ingredient.index} phx-disable-with="Deleting...">Delete</.button>
-            </div>
+        <span class="text-sm font-semibold leading-6 text-zinc-800">Ingredients</span>
+
+        <%= if Enum.empty?(@form[:recipe_ingredients].value) do %>
+          <div class="flex items-center justify-center mb-4">
+            <span class="text-sm text-zinc-500">No ingredients found</span>
           </div>
-        </.inputs_for>
+        <% else %>
+          <.inputs_for :let={f_ingredient} field={@form[:recipe_ingredients]}>
+            <div class="flex gap-x-2 items-center">
+              <div class="w-1/2">
+                <.input field={f_ingredient[:ingredient]} type="text" placeholder="Name"/>
+              </div>
+              <div class="w-1/4">
+                <.input field={f_ingredient[:amount]} type="number" placeholder="Amount"/>
+              </div>
+              <div class="w-1/4">
+                <.input field={f_ingredient[:measurement_id]} type="select" options={measurement_options()}/>
+              </div>
+              <div>
+                <.button class="mt-2" phx-click="delete_ingredient" phx-value-index={f_ingredient.index} phx-disable-with="Deleting...">Delete</.button>
+              </div>
+            </div>
+          </.inputs_for>
+        <% end %>
 
         <div class="grid items-center justify-items-center mt-2">
           <.button phx-click="add_ingredient" phx-disable-with="Adding...">
@@ -71,7 +79,7 @@ alias Enum.EmptyError
       <.input field={@form[:instructions]} type="textarea" rows={10} label="Instructions" />
 
       <:actions>
-          <.button phx-disable-with="Saving..." type="submit">Save</.button>
+        <.button phx-disable-with="Saving..." type="submit">Save</.button>
       </:actions>
     </.simple_form>
     """
@@ -110,7 +118,7 @@ alias Enum.EmptyError
     changeset = Recipe.change_recipe(recipe)
 
     assign(socket,
-      page_title: "Edit recipe",
+      page_title: "Edit recipe: #{recipe.name}",
       recipe: recipe,
       form: to_form(changeset)
     )

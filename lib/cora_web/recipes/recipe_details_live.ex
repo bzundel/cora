@@ -6,17 +6,17 @@ defmodule CoraWeb.Recipes.DetailsLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between mb-2">
       <.banner>{@recipe.name}</.banner>
-      <div>
+      <div class="flex-shrink-0">
         <.a href={~p"/recipes/edit/#{@recipe.id}"}>Edit</.a>
         <.a href={~p"/recipes"}>Back</.a>
       </div>
     </div>
 
-    <hr/>
+    <hr class="my-2"/>
 
-    <div class="flex flex-col gap-y-4">
+    <div class="flex flex-col gap-y-8">
       <div>
         <span class="text-l font-bold">Description</span>
         <p>{@recipe.description}</p>
@@ -30,22 +30,28 @@ defmodule CoraWeb.Recipes.DetailsLive do
       <div>
         <span class="text-l font-bold">Ingredients</span>
 
-        <div class="flex gap-x-2 items-center">
-          <span class="text-sm">Servings: </span>
-          <input type="number" name="desired_servings" class="py-1 rounded-lg text-zinc-900 focus:ring-0 sm:text-sm" value={@desired_servings} phx-blur="desired_servings_changed" min="1" placeholder="Servings"/>
-        </div>
-        <div class="grid grid-cols-2">
-          <%= for ingredient <- @recipe.recipe_ingredients do %> <!-- FIXME fix this goofy field naming (recipe.recipe_ingredients and ingredient.ingredient) -->
-            <span>{ingredient.ingredient}</span>
-            <span>{(ingredient.amount / @recipe.servings) * @desired_servings} {ingredient.measurement.unit}</span>
-          <% end %>
-        </div>
+        <%= if Enum.empty?(@recipe.recipe_ingredients) do %>
+          <div class="flex items-center justify-center mt-4">
+            <span class="text-sm text-zinc-500">No ingredients found</span>
+          </div>
+        <% else %>
+          <div class="flex gap-x-2 items-center mb-4">
+            <span class="text-sm">Servings: </span>
+            <input type="number" name="desired_servings" class="py-1 rounded-lg text-zinc-900 focus:ring-0 sm:text-sm" value={@desired_servings} phx-blur="desired_servings_changed" min="1" placeholder="Servings"/>
+          </div>
+          <div class="grid grid-cols-2">
+            <%= for ingredient <- @recipe.recipe_ingredients do %> <!-- FIXME fix this goofy field naming (recipe.recipe_ingredients and ingredient.ingredient) -->
+              <span>{ingredient.ingredient}</span>
+              <span>{(ingredient.amount / @recipe.servings) * @desired_servings} {ingredient.measurement.unit}</span>
+            <% end %>
+          </div>
+        <% end %>
       </div>
 
       <div>
         <span class="text-l font-bold">Instructions</span>
         <p>
-          {@recipe.instructions}
+          <%= Phoenix.HTML.raw(String.replace(@recipe.instructions, "\n", "<br>")) %>
         </p>
       </div>
     </div>
