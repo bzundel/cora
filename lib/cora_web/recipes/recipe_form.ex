@@ -42,14 +42,28 @@ alias Enum.EmptyError
       <hr/>
 
       <fieldset>
-        <legend>Ingredients</legend>
         <.inputs_for :let={f_ingredient} field={@form[:recipe_ingredients]}>
-          <.input field={f_ingredient[:ingredient]} type="text" label="Name"/>
-          <.input field={f_ingredient[:amount]} type="number" label="Amount"/>
-          <.input field={f_ingredient[:measurement_id]} type="select" options={measurement_options()} label="Unit"/>
-          <.button phx-click="delete_ingredient" phx-value-index={f_ingredient.index} phx-disable-with="Deleting...">Delete</.button>
+          <div class="flex gap-x-2 items-center">
+            <div class="w-1/2">
+              <.input field={f_ingredient[:ingredient]} type="text"/>
+            </div>
+            <div class="w-1/4">
+              <.input field={f_ingredient[:amount]} type="number"/>
+            </div>
+            <div class="w-1/4">
+              <.input field={f_ingredient[:measurement_id]} type="select" options={measurement_options()}/>
+            </div>
+            <div class="">
+              <.button phx-click="delete_ingredient" phx-value-index={f_ingredient.index} phx-disable-with="Deleting...">Delete</.button>
+            </div>
+          </div>
         </.inputs_for>
-        <.button phx-click="add_ingredient" phx-disable-with="Adding...">Add</.button>
+
+        <div class="grid items-center justify-items-center mt-2">
+          <.button phx-click="add_ingredient" phx-disable-with="Adding...">
+            Add
+          </.button>
+        </div>
       </fieldset>
 
       <hr/>
