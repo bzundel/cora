@@ -139,11 +139,11 @@ alias Enum.EmptyError
 
   def handle_event("delete_ingredient", %{"index" => index}, socket) do
     index = String.to_integer(index)
-    IO.inspect(index, label: "Index")
     socket = update(socket, :form, fn %{source: changeset} ->
-      existing = Ecto.Changeset.get_assoc(changeset, :recipe_ingredients)
-      IO.inspect(existing, label: "Existing ingredients")
+      existing = Ecto.Changeset.get_field(changeset, :recipe_ingredients)
+      IO.inspect(changeset, label: "Pre-delete changeset", limit: :infinity)
       changeset = Ecto.Changeset.put_assoc(changeset, :recipe_ingredients, List.delete_at(existing, index))
+      IO.inspect(changeset, label: "Post-delete changeset", limit: :infinity)
       to_form(changeset)
     end)
     {:noreply, socket}
