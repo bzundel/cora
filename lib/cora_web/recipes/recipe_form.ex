@@ -1,5 +1,5 @@
 defmodule CoraWeb.Recipes.RecipeForm do
-alias Enum.EmptyError
+alias Cora.Recipes.RecipeIngredient
   use CoraWeb, :live_view
 
   alias Cora.Recipes
@@ -27,6 +27,19 @@ alias Enum.EmptyError
     >
       <.input field={@form[:name]} type="text" label="Name" />
       <.input field={@form[:description]} type="textarea" rows={4} label="Description" />
+
+      <hr/>
+
+      <div class="flex flex-col gap-y-2">
+        <span class="text-sm font-semibold leading-6 text-zinc-800">Image</span>
+        <div phx-drop-target={@uploads.image.ref}>
+          <.live_file_input upload={@uploads.image} /> <!-- FIXME can this get some proper styling? -->
+        </div>
+        <.live_img_preview :for={entry <- @uploads.image.entries} entry={entry} width="75" />
+      </div>
+
+      <hr/>
+
       <div class="flex gap-x-2">
         <div class="w-1/3">
           <.input field={@form[:prep_time]} type="number" label="Preparation time" />
@@ -87,12 +100,23 @@ alias Enum.EmptyError
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok,
+      socket
+      |> assign(:uploaded_files, [])
+      |> allow_upload(:image, accept: ~w(.jpg .jpeg .png), max_entries: 1)}
   end
 
   defp measurement_options() do
     Measurement.all_measurements()
     |> Enum.map(&{&1.unit, &1.id})
+  end
+
+  defp image_path(id) do
+    #Path.join(Application.app_dir(:cora, "priv/static/uploads"), "recipe_#{id}_image.jpg") # FIXME file ending should be dynamic
+  end
+
+  defp image_url(id) do
+    #Routes.static_path("/uploads/recipe_#{id}_image.jpg") # FIXME file ending should be dynamic
   end
 
   @impl true
@@ -101,7 +125,7 @@ alias Enum.EmptyError
   end
 
   defp apply_action(socket, :new, _params) do
-    changeset = Recipe.change_recipe(%Recipe{})
+    changeset = Recipe.change_recipe(%Recipe{recipe_ingredients: [%RecipeIngredient{}]})
     default_measurement = measurement_options() |> List.first() |> elem(1)
     ingredients = [%{id: 0, ingredient: "", amount: nil, measurement_id: default_measurement}]
 
@@ -157,9 +181,17 @@ alias Enum.EmptyError
     {:noreply, socket}
   end
 
+  defp save_image(socket, recipe) do
+    consume_uploaded_entries(socket, :image, fn %{path: path}, entry ->
+      dest = Path.join(Application.app_dir(:cora, "priv/static/uploads"), "recipe_#{recipe.id}_image#{Path.extname(entry.client_name)}")
+      File.cp!(path, dest)
+    end)
+  end
+
   defp save_recipe(socket, :new, recipe_params) do
     case Recipe.create_recipe(recipe_params) do
       {:ok, recipe} ->
+        save_image(socket, recipe)
         {:noreply,
          socket
          |> put_flash(:info, "Recipe created successfully")
@@ -173,6 +205,7 @@ alias Enum.EmptyError
     IO.inspect(recipe_params, label: "Recipe params")
     case Recipes.update_recipe(socket.assigns.recipe, recipe_params) do
       {:ok, recipe} ->
+        save_image(socket, recipe)
         {:noreply,
          socket
          |> put_flash(:info, "Successfully edited recipe")
